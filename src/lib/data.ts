@@ -143,6 +143,9 @@ export const staticServices: Service[] = [
 
 async function fetchCollection<T>(collectionName: string, fallbackData: T[], options?: { orderByField?: string; limit?: number }): Promise<T[]> {
   if (typeof window !== 'undefined') {
+    if (options?.limit) {
+      return fallbackData.slice(0, options.limit);
+    }
     return fallbackData;
   }
   try {
@@ -158,6 +161,9 @@ async function fetchCollection<T>(collectionName: string, fallbackData: T[], opt
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
       console.log(`No documents found in '${collectionName}', using static data.`);
+      if (options?.limit) {
+        return fallbackData.slice(0, options.limit);
+      }
       return fallbackData;
     }
     const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
@@ -179,6 +185,9 @@ async function fetchCollection<T>(collectionName: string, fallbackData: T[], opt
     return data;
   } catch (error) {
     console.error(`Error fetching '${collectionName}' from Firestore: `, error);
+    if (options?.limit) {
+      return fallbackData.slice(0, options.limit);
+    }
     return fallbackData;
   }
 }

@@ -17,7 +17,7 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const sections = navLinks
-        .map(link => link.href.startsWith('/#') ? document.querySelector(link.href.substring(1)) : null)
+        .map(link => link.href.startsWith('/#') || link.href.startsWith('#') ? document.querySelector(link.href.startsWith('/') ? link.href.substring(1) : link.href) : null)
         .filter(Boolean);
 
       const scrollPosition = window.scrollY + 150;
@@ -25,7 +25,7 @@ export function Header() {
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
         if (section && (section as HTMLElement).offsetTop <= scrollPosition) {
-          const correspondingLink = navLinks.find(link => link.href.substring(1) === section.id);
+          const correspondingLink = navLinks.find(link => (link.href.startsWith('/') ? link.href.substring(1) : link.href) === `#${section.id}`);
           if (correspondingLink) {
             setActiveLink(correspondingLink.href);
             return;
@@ -47,12 +47,14 @@ export function Header() {
   }, [pathname]);
 
   const renderLink = (link: { href: string; label: string }, isMobile = false) => {
-    const isPageLink = link.href.startsWith('/#');
+    const isPageLink = link.href.startsWith('#') || (link.href.startsWith('/#') && pathname === '/');
     
-    const handleClick = () => {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if (isMobile) setIsOpen(false);
-      if (isPageLink && pathname === '/') {
-        document.querySelector(link.href.substring(1))?.scrollIntoView({ behavior: 'smooth' });
+      if (isPageLink) {
+        e.preventDefault();
+        const targetId = link.href.substring(link.href.indexOf('#'));
+        document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
@@ -60,18 +62,20 @@ export function Header() {
       activeLink === link.href ? "text-primary" : "text-foreground/60"
     } ${isMobile ? 'text-lg font-medium' : ''}`;
 
-    if (isPageLink && pathname ==='/') {
+    if (isPageLink) {
       return (
-        <button onClick={handleClick} className={linkClasses}>
+        <a href={link.href} onClick={handleClick} className={linkClasses}>
           {link.label}
-        </button>
+        </a>
       )
     }
 
     return (
        <Link
-        href={isPageLink ? `/${link.href}` : link.href}
-        onClick={() => isMobile && setIsOpen(false)}
+        href={link.href}
+        onClick={(e) => {
+          if (isMobile) setIsOpen(false);
+        }}
         className={linkClasses}
       >
         {link.label}
@@ -82,7 +86,7 @@ export function Header() {
   // Adjust navlinks for homepage
   const currentNavLinks = navLinks.map(link => ({
     ...link,
-    href: link.href.startsWith('#') ? `/${link.href}`: link.href
+    href: (link.href.startsWith('#') && pathname === '/') ? link.href : (link.href.startsWith('#') ? `/${link.href}` : link.href)
   }));
   
 
