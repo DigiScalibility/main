@@ -32,7 +32,7 @@ export function Services() {
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <div className="bg-primary/10 p-2 rounded-lg">
-                     <service.icon className="h-6 w-6 text-primary" />
+                     <service.icon className="h-6 w-6 text-primary service-icon transition-transform duration-300" />
                   </div>
                   <CardTitle className="font-headline text-xl">
                     {service.title}

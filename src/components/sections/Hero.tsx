@@ -18,11 +18,10 @@ export function Hero() {
       <div className="container relative px-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Scale your brand with performance-focused digital services
+            Building the digital backbone for tomorrow's businesses
           </h1>
           <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-            We combine cutting-edge design, precision engineering, and performance
-            marketing to drive measurable outcomes for Australian businesses.
+            We deliver performance-focused design, development, and marketing solutions that drive growth and create lasting value for our partners.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg">Request a Quote</Button>
