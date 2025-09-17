@@ -142,12 +142,16 @@ export const staticServices: Service[] = [
 ];
 
 async function fetchCollection<T>(collectionName: string, fallbackData: T[], options?: { orderByField?: string; limit?: number }): Promise<T[]> {
-  if (typeof window !== 'undefined') {
+  // Temporarily disable Firestore fetching to avoid permission errors
+  // Once the Firestore API is enabled in the Google Cloud Console, this can be restored.
+  const useStaticData = true; 
+  if (useStaticData || typeof window !== 'undefined') {
     if (options?.limit) {
       return fallbackData.slice(0, options.limit);
     }
     return fallbackData;
   }
+  
   try {
     let q = query(collection(db, collectionName));
     
@@ -193,7 +197,7 @@ async function fetchCollection<T>(collectionName: string, fallbackData: T[], opt
 }
 
 export async function getServices(): Promise<Service[]> {
-  return fetchCollection<Service>('services', staticServices, { orderByField: 'title' });
+  return fetchCollection<Service>('services', staticServices);
 }
 
 const staticPlans: Plan[] = [
@@ -244,7 +248,7 @@ const staticPlans: Plan[] = [
 ];
 
 export async function getPlans(): Promise<Plan[]> {
-    return fetchCollection<Plan>('plans', staticPlans, { orderByField: 'name' });
+    return fetchCollection<Plan>('plans', staticPlans);
 }
 
 export const howItWorks = [
@@ -295,7 +299,7 @@ const staticCaseStudies: CaseStudy[] = [
 ]
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
-    return fetchCollection<CaseStudy>('caseStudies', staticCaseStudies, { orderByField: 'title' });
+    return fetchCollection<CaseStudy>('caseStudies', staticCaseStudies);
 }
 
 const staticTestimonials: Testimonial[] = [
@@ -317,7 +321,7 @@ const staticTestimonials: Testimonial[] = [
 ]
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-    return fetchCollection<Testimonial>('testimonials', staticTestimonials, { orderByField: 'name' });
+    return fetchCollection<Testimonial>('testimonials', staticTestimonials);
 }
 
 const staticTeam: TeamMember[] = [
@@ -345,7 +349,7 @@ const staticTeam: TeamMember[] = [
 ]
 
 export async function getTeam(): Promise<TeamMember[]> {
-    return fetchCollection<TeamMember>('team', staticTeam, { orderByField: 'name' });
+    return fetchCollection<TeamMember>('team', staticTeam);
 }
 
 const staticBlogPosts: BlogPost[] = [
@@ -384,6 +388,30 @@ const staticBlogPosts: BlogPost[] = [
         tags: ['seo', 'performance', 'webdev'],
         imageUrl: 'https://images.unsplash.com/photo-1581472723648-90f1da82141e?q=80&w=600&auto=format&fit=crop',
         imageHint: 'website loading speed'
+    },
+    {
+        id: '4',
+        title: 'Crafting the Perfect B2B SaaS Onboarding Flow',
+        slug: 'saas-onboarding-flow',
+        author: 'Hamza',
+        publishedAt: Timestamp.fromDate(new Date('2024-04-25T11:00:00Z')),
+        summary: 'Learn the keys to creating a frictionless onboarding experience that converts trial users into paying customers.',
+        content: 'Full markdown content here...',
+        tags: ['saas', 'ux', 'conversion'],
+        imageUrl: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?q=80&w=600&auto=format&fit=crop',
+        imageHint: 'business people collaborating'
+    },
+    {
+        id: '5',
+        title: 'A/B Testing for Marketers: From Hypothesis to High-Impact',
+        slug: 'ab-testing-for-marketers',
+        author: 'Zain',
+        publishedAt: Timestamp.fromDate(new Date('2024-04-20T16:00:00Z')),
+        summary: 'A practical guide for marketers to design, implement, and analyze A/B tests that drive meaningful results.',
+        content: 'Full markdown content here...',
+        tags: ['cro', 'marketing', 'analytics'],
+        imageUrl: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=600&auto=format&fit=crop',
+        imageHint: 'team working on laptops'
     }
 ]
 
