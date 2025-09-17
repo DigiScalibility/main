@@ -235,8 +235,8 @@ export const footerLinks = {
         { href: "#contact", label: "Contact" },
     ],
     resources: [
-        { href: "#", label: "Blog" },
-        { href: "#", label: "Guides" },
-        { href: "#", label: "FAQs" },
+        { href: "#blog", label: "Blog" },
+        { href: "#guides", label: "Guides" },
+        { href: "#faqs", label: "FAQs" },
     ]
 }
