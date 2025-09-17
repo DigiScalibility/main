@@ -6,18 +6,23 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { CaseStudiesAndTestimonials } from "@/components/sections/CaseStudiesAndTestimonials";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
-import { getServices } from "@/lib/data";
+import { getServices, getPlans, getCaseStudies, getTestimonials, getTeam } from "@/lib/data";
 
 export default async function Home() {
   const services = await getServices();
+  const plans = await getPlans();
+  const caseStudies = await getCaseStudies();
+  const testimonials = await getTestimonials();
+  const team = await getTeam();
+
   return (
     <>
       <Hero />
       <Services services={services} />
-      <Plans />
+      <Plans plans={plans} />
       <HowItWorks />
-      <CaseStudiesAndTestimonials />
-      <About />
+      <CaseStudiesAndTestimonials caseStudies={caseStudies} testimonials={testimonials} />
+      <About team={team} />
       <CtaSection />
       <Contact />
     </>

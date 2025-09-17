@@ -8,10 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { plans } from "@/lib/data";
+import type { Plan } from "@/lib/data";
 import { Check } from "lucide-react";
 
-export function Plans() {
+export function Plans({ plans }: { plans: Plan[] }) {
   return (
     <section id="plans" className="py-16 md:py-24">
       <div className="container">
@@ -28,7 +28,7 @@ export function Plans() {
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={`flex flex-col transition-transform duration-300 hover:-translate-y-2 ${
+              className={`flex flex-col card ${
                 plan.popular ? "border-primary shadow-primary/20 shadow-lg" : ""
               }`}
             >
@@ -65,7 +65,7 @@ export function Plans() {
               </CardContent>
               <CardFooter>
                 <Button
-                  className="w-full"
+                  className="w-full btn"
                   variant={plan.popular ? "default" : "outline"}
                 >
                   {plan.cta}

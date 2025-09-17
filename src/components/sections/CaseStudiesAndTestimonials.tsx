@@ -8,10 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { caseStudies, testimonials } from "@/lib/data";
+import type { CaseStudy, Testimonial } from "@/lib/data";
 import { ArrowRight } from "lucide-react";
 
-export function CaseStudiesAndTestimonials() {
+export function CaseStudiesAndTestimonials({ caseStudies, testimonials }: { caseStudies: CaseStudy[], testimonials: Testimonial[] }) {
   return (
     <section id="case-studies" className="py-16 md:py-24">
       <div className="container">
@@ -26,7 +26,7 @@ export function CaseStudiesAndTestimonials() {
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           {caseStudies.map((study) => (
-            <Card key={study.title} className="overflow-hidden transition-transform duration-300 hover:-translate-y-2">
+            <Card key={study.title} className="overflow-hidden card">
               <CardHeader className="p-0">
                 <Image
                   src={study.image}
@@ -50,7 +50,7 @@ export function CaseStudiesAndTestimonials() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full btn">
                   View Case Study <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>

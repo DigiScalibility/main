@@ -1,15 +1,5 @@
-
-import {
-  BarChart2,
-  Briefcase,
-  Code,
-  LineChart,
-  Megaphone,
-  Search,
-  Users,
-} from "lucide-react";
 import { db } from './firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 export type Service = {
   icon: string;
@@ -18,6 +8,38 @@ export type Service = {
   benefits: string[];
   pricing: string;
   timeline: string;
+};
+
+export type Plan = {
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  cta: string;
+  popular: boolean;
+};
+
+export type CaseStudy = {
+  image: string;
+  title: string;
+  description: string;
+  result: string;
+  imageHint: string;
+};
+
+export type Testimonial = {
+  quote: string;
+  name: string;
+  company: string;
+};
+
+export type TeamMember = {
+  name: string;
+  role: string;
+  avatar: string;
+  bio: string;
+  imageHint: string;
 };
 
 export const navLinks = [
@@ -102,24 +124,27 @@ export const staticServices: Service[] = [
   },
 ];
 
-export async function getServices(): Promise<Service[]> {
+async function fetchCollection<T>(collectionName: string, fallbackData: T[], orderByField?: string): Promise<T[]> {
   try {
-    const servicesCollection = collection(db, 'services');
-    const servicesSnapshot = await getDocs(servicesCollection);
-    if (servicesSnapshot.empty) {
-      console.log('No services found in Firestore, using static data.');
-      return staticServices;
+    const coll = collection(db, collectionName);
+    const q = orderByField ? query(coll, orderBy(orderByField)) : coll;
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      console.log(`No documents found in '${collectionName}', using static data.`);
+      return fallbackData;
     }
-    const servicesList = servicesSnapshot.docs.map(doc => doc.data() as Service);
-    return servicesList;
+    return snapshot.docs.map(doc => doc.data() as T);
   } catch (error) {
-    console.error("Error fetching services from Firestore: ", error);
-    return staticServices; // Fallback to static data on error
+    console.error(`Error fetching '${collectionName}' from Firestore: `, error);
+    return fallbackData; // Fallback to static data on error
   }
 }
 
+export async function getServices(): Promise<Service[]> {
+  return fetchCollection<Service>('services', staticServices, 'title');
+}
 
-export const plans = [
+const staticPlans: Plan[] = [
   {
     name: "Launch",
     price: "$7k",
@@ -166,6 +191,10 @@ export const plans = [
   },
 ];
 
+export async function getPlans(): Promise<Plan[]> {
+    return fetchCollection<Plan>('plans', staticPlans, 'name');
+}
+
 export const howItWorks = [
     {
         step: 1,
@@ -189,7 +218,7 @@ export const howItWorks = [
     }
 ]
 
-export const caseStudies = [
+const staticCaseStudies: CaseStudy[] = [
     {
         image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
         title: "SaaS Website Revamp",
@@ -213,7 +242,11 @@ export const caseStudies = [
     }
 ]
 
-export const testimonials = [
+export async function getCaseStudies(): Promise<CaseStudy[]> {
+    return fetchCollection<CaseStudy>('caseStudies', staticCaseStudies, 'title');
+}
+
+const staticTestimonials: Testimonial[] = [
     {
         quote: "DigiScalibity transformed our online presence. Their strategic approach to SEO and content doubled our organic traffic in just a few months.",
         name: "Sarah Jones",
@@ -231,8 +264,11 @@ export const testimonials = [
     }
 ]
 
+export async function getTestimonials(): Promise<Testimonial[]> {
+    return fetchCollection<Testimonial>('testimonials', staticTestimonials, 'name');
+}
 
-export const team = [
+const staticTeam: TeamMember[] = [
     {
         name: "Abbas",
         role: "Founder & Lead Engineer",
@@ -244,7 +280,7 @@ export const team = [
         name: "Hamza",
         role: "Head of Marketing",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
-        bio: "Hamza is a data-driven marketer who excels at creating growth strategies that deliver measurable results and significant ROI for our clients.",
+        bio: "Hamza is a data-driven marketer who excels at creating growth strategies that deliver a measurable impact and significant ROI for our clients.",
         imageHint: "man portrait smiling"
     },
     {
@@ -255,6 +291,11 @@ export const team = [
         imageHint: "woman portrait"
     }
 ]
+
+export async function getTeam(): Promise<TeamMember[]> {
+    return fetchCollection<TeamMember>('team', staticTeam, 'name');
+}
+
 
 export const footerLinks = {
     company: [

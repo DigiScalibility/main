@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { team } from "@/lib/data";
+import type { TeamMember } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 
-export function About() {
+export function About({ team }: { team: TeamMember[] }) {
   const values = ["Growth", "Product Content", "Passion", "Social Responsibility"];
   return (
     <section id="about" className="py-16 md:py-24 bg-secondary">
