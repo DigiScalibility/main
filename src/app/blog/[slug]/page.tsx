@@ -1,4 +1,4 @@
-import { getBlogPosts, BlogPost } from '@/lib/data';
+import { getBlogPosts, getPost, BlogPost } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { format } from 'date-fns';
@@ -9,11 +9,6 @@ import { getTeam } from '@/lib/data';
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
   return posts.map(post => ({ slug: post.slug }));
-}
-
-async function getPost(slug: string) {
-  const posts = await getBlogPosts();
-  return posts.find(post => post.slug === slug);
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -58,8 +53,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           src={post.imageUrl}
           alt={post.title}
           data-ai-hint={post.imageHint}
-          layout="fill"
-          objectFit="cover"
+          fill
+          className="object-cover"
           priority
         />
       </div>

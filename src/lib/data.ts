@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, getDocs, orderBy, query, limit as firestoreLimit } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, limit as firestoreLimit, where } from 'firebase/firestore';
 import { PlaceHolderImages } from './placeholder-images';
 import { Timestamp } from 'firebase/firestore';
 
@@ -144,7 +144,7 @@ export const staticServices: Service[] = [
 async function fetchCollection<T>(collectionName: string, fallbackData: T[], options?: { orderByField?: string; limit?: number }): Promise<T[]> {
   // Temporarily disable Firestore fetching to avoid permission errors
   // Once the Firestore API is enabled in the Google Cloud Console, this can be restored.
-  const useStaticData = true; 
+  const useStaticData = false; 
   if (useStaticData || typeof window !== 'undefined') {
     if (options?.limit) {
       return fallbackData.slice(0, options.limit);
@@ -419,13 +419,36 @@ export async function getBlogPosts(options?: { limit?: number }): Promise<BlogPo
     return fetchCollection<BlogPost>('blogPosts', staticBlogPosts, { orderByField: 'publishedAt', ...options });
 }
 
+export async function getPost(slug: string): Promise<BlogPost | undefined> {
+  const useStaticData = false;
+  if (useStaticData || typeof window !== 'undefined') {
+    return staticBlogPosts.find(post => post.slug === slug);
+  }
+
+  try {
+    const q = query(collection(db, 'blogPosts'), where('slug', '==', slug), firestoreLimit(1));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      console.log(`No post found with slug '${slug}', trying static data.`);
+      return staticBlogPosts.find(post => post.slug === slug);
+    }
+    
+    const doc = snapshot.docs[0];
+    return { id: doc.id, ...doc.data() } as BlogPost;
+  } catch (error) {
+    console.error(`Error fetching post with slug '${slug}' from Firestore: `, error);
+    return staticBlogPosts.find(post => post.slug === slug);
+  }
+}
+
 
 export const footerLinks = {
     company: [
-        { href: "#services", label: "Services" },
-        { href: "#case-studies", label: "Case Studies" },
-        { href: "#about", label: "About" },
-        { href: "#contact", label: "Contact" },
+        { href: "/#services", label: "Services" },
+        { href: "/#case-studies", label: "Case Studies" },
+        { href: "/#about", label: "About" },
+        { href: "/#contact", label: "Contact" },
     ],
     resources: [
         { href: "/blog", label: "Blog" },
