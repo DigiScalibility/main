@@ -162,21 +162,21 @@ export const howItWorks = [
 
 export const caseStudies = [
     {
-        image: "1",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
         title: "SaaS Website Revamp",
         description: "A complete overhaul of a B2B SaaS platform's marketing site to improve user journey and conversion rates.",
         result: "10x signup conversions",
         imageHint: "dashboard analytics"
     },
     {
-        image: "2",
+        image: "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600&auto=format&fit=crop",
         title: "eCommerce Growth Engine",
         description: "Implemented a full-funnel marketing strategy for a D2C brand, combining SEO, paid social, and email.",
         result: "250% ROI in 6 months",
         imageHint: "online shopping"
     },
     {
-        image: "3",
+        image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=600&auto=format&fit=crop",
         title: "B2B Pipeline Boost",
         description: "Developed a targeted lead generation campaign that filled the sales pipeline with qualified opportunities.",
         result: "+$2M pipeline value",
@@ -186,7 +186,7 @@ export const caseStudies = [
 
 export const testimonials = [
     {
-        quote: "AusDigital Edge transformed our online presence. Their strategic approach to SEO and content doubled our organic traffic in just a few months.",
+        quote: "DigiScalibity transformed our online presence. Their strategic approach to SEO and content doubled our organic traffic in just a few months.",
         name: "Sarah Jones",
         company: "CEO of InnovateTech"
     },
@@ -207,21 +207,21 @@ export const team = [
     {
         name: "Abbas",
         role: "Founder & Lead Engineer",
-        avatar: "4",
+        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop",
         bio: "With over a decade of experience in software engineering, Abbas leads our technical vision and ensures every project is built to the highest standards.",
         imageHint: "man portrait"
     },
     {
         name: "Hamza",
         role: "Head of Marketing",
-        avatar: "5",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
         bio: "Hamza is a data-driven marketer who excels at creating growth strategies that deliver measurable results and significant ROI for our clients.",
         imageHint: "man portrait smiling"
     },
     {
         name: "Zain",
         role: "Operations Lead",
-        avatar: "6",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop",
         bio: "Zain keeps the wheels turning, managing projects, and ensuring seamless communication and delivery from start to finish.",
         imageHint: "woman portrait"
     }

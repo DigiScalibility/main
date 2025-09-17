@@ -42,11 +42,11 @@ export function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between border-t pt-6 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} AusDigital Edge. All rights reserved.
+            © {new Date().getFullYear()} DigiScalibity. All rights reserved.
           </p>
           <div className="mt-4 flex items-center space-x-4 sm:mt-0">
              <p className="text-sm text-muted-foreground">
-                <a href="mailto:contact@ausdigitaledge.com" className="hover:text-foreground">contact@ausdigitaledge.com</a>
+                <a href="mailto:contact@digiscalibity.com" className="hover:text-foreground">contact@digiscalibity.com</a>
                 <span className="mx-2">|</span>
                 <span>+61 400 000 000</span>
             </p>

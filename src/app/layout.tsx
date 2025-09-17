@@ -16,9 +16,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "AusDigital Edge | Performance-focused Digital Services",
+  title: "DigiScalibity | Performance-focused Digital Services",
   description:
-    "We help Australian businesses scale with performance-focused design, development, and growth marketing.",
+    "We help businesses scale with performance-focused design, development, and growth marketing.",
 };
 
 export default function RootLayout({

@@ -28,7 +28,7 @@ export function Plans() {
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={`flex flex-col ${
+              className={`flex flex-col transition-transform duration-300 hover:-translate-y-2 ${
                 plan.popular ? "border-primary shadow-primary/20 shadow-lg" : ""
               }`}
             >
@@ -36,7 +36,8 @@ export function Plans() {
                 {plan.popular && (
                   <Badge
                     variant="default"
-                    className="absolute -top-4 right-6 bg-primary"
+                    className="absolute -top-4 right-6"
+                    style={{backgroundColor: 'hsl(var(--accent))', color: 'hsl(var(--accent-foreground))'}}
                   >
                     Most Popular
                   </Badge>

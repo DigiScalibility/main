@@ -26,10 +26,10 @@ export function CaseStudiesAndTestimonials() {
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           {caseStudies.map((study) => (
-            <Card key={study.title} className="overflow-hidden">
+            <Card key={study.title} className="overflow-hidden transition-transform duration-300 hover:-translate-y-2">
               <CardHeader className="p-0">
                 <Image
-                  src={`https://picsum.photos/seed/${study.image}/600/400`}
+                  src={study.image}
                   alt={study.title}
                   data-ai-hint={study.imageHint}
                   width={600}

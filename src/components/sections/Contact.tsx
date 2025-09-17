@@ -65,8 +65,8 @@ export function Contact() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     console.log(values);
-    // TODO: Implement submission to Firestore
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // This is a mock submission. In a real app, you'd send this to a backend.
+    await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSubmitting(false);
     toast({
       title: "Message Sent!",
@@ -127,11 +127,11 @@ export function Contact() {
               </h3>
               <div className="mt-4 space-y-3 text-muted-foreground">
                 <a
-                  href="mailto:contact@ausdigitaledge.com"
+                  href="mailto:contact@digiscalibity.com"
                   className="flex items-center gap-3 hover:text-primary"
                 >
                   <Mail className="h-5 w-5" />
-                  <span>contact@ausdigitaledge.com</span>
+                  <span>contact@digiscalibity.com</span>
                 </a>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5" />
@@ -155,7 +155,7 @@ export function Contact() {
             </div>
             <div>
                 <Image
-                    src="https://picsum.photos/seed/8/600/400"
+                    src="https://images.unsplash.com/photo-1541443914731-d580d8457def?q=80&w=600&auto=format&fit=crop"
                     alt="Map showing office location"
                     data-ai-hint="city map"
                     width={600}
@@ -206,7 +206,7 @@ export function Contact() {
                   name="company"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company</FormLabel>
+                      <FormLabel>Company (Optional)</FormLabel>
                       <FormControl>
                         <Input placeholder="Your Company Name" {...field} />
                       </FormControl>
@@ -220,7 +220,7 @@ export function Contact() {
                   name="budget"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Budget Range</FormLabel>
+                      <FormLabel>Budget Range (AUD)</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -228,10 +228,11 @@ export function Contact() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="<5k">Under $5k</SelectItem>
+                          <SelectItem value="<5k">Under $5,000</SelectItem>
                           <SelectItem value="5-10k">$5k - $10k</SelectItem>
-                          <SelectItem value="10-20k">$10k - $20k</SelectItem>
-                          <SelectItem value="20k+">$20k+</SelectItem>
+                          <SelectItem value="10-25k">$10k - $25k</SelectItem>
+                          <SelectItem value="25-50k">$25k - $50k</SelectItem>
+                          <SelectItem value="50k+">$50k+</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -243,7 +244,7 @@ export function Contact() {
                   name="timeline"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Timeline</FormLabel>
+                      <FormLabel>Timeline (Optional)</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., 3-6 months" {...field} />
                       </FormControl>
@@ -279,7 +280,7 @@ export function Contact() {
                     {isAiAdjusting ? (
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                      <Sparkles className="mr-2 h-4 w-4 text-primary" />
+                      <Sparkles className="mr-2 h-4 w-4 text-accent" />
                     )}
                     Adjust Tone with AI
                   </Button>

@@ -20,12 +20,12 @@ export function About() {
               {team.map((member) => (
                 <div key={member.name} className="flex items-start gap-4">
                   <Image
-                    src={`https://picsum.photos/seed/${member.avatar}/200/200`}
+                    src={member.avatar}
                     alt={member.name}
                     data-ai-hint={member.imageHint}
                     width={80}
                     height={80}
-                    className="rounded-full"
+                    className="rounded-full object-cover"
                   />
                   <div>
                     <h3 className="font-headline text-lg font-semibold">{member.name}</h3>
