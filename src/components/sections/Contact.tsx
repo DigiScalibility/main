@@ -53,6 +53,7 @@ export function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAiAdjusting, setIsAiAdjusting] = useState(false);
+  const [originalDetails, setOriginalDetails] = useState<string | undefined>(undefined);
   const mapImage = PlaceHolderImages.find(p => p.id === '8');
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,8 +69,7 @@ export function Contact() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const adjustedDetails = form.getValues("projectDetails");
-      const originalDetails = form.formState.defaultValues?.projectDetails;
+      const adjustedDetails = values.projectDetails;
       
       await saveContactMessage({
         ...values,
@@ -83,6 +83,7 @@ export function Contact() {
         description: "Thanks for reaching out. We'll get back to you shortly.",
       });
       form.reset();
+      setOriginalDetails(undefined);
     } catch (error) {
       console.error("Failed to send message:", error);
       toast({
@@ -107,6 +108,9 @@ export function Contact() {
     }
 
     setIsAiAdjusting(true);
+    if (!originalDetails) {
+      setOriginalDetails(currentDetails);
+    }
     try {
       const result = await adjustProjectDetailsTone({
         projectDetails: currentDetails,
@@ -295,7 +299,8 @@ export function Contact() {
                     type="button"
                     variant="outline"
                     onClick={handleAdjustTone}
-                    disabled={isAiAdjusting}
+                    disabled={isAiAdjusting || isSubmitting}
+                    className="btn"
                   >
                     {isAiAdjusting ? (
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
@@ -304,7 +309,7 @@ export function Contact() {
                     )}
                     Adjust Tone with AI
                   </Button>
-                  <Button type="submit" disabled={isSubmitting} className="btn-glow">
+                  <Button type="submit" disabled={isSubmitting} className="btn">
                     {isSubmitting && (
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
                     )}
