@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "SaaS Website Revamp",
+      "imageUrl": "https://picsum.photos/seed/1/600/400",
+      "imageHint": "dashboard analytics"
+    },
+    {
+      "id": "2",
+      "description": "eCommerce Growth Engine",
+      "imageUrl": "https://picsum.photos/seed/2/600/400",
+      "imageHint": "online shopping"
+    },
+    {
+      "id": "3",
+      "description": "B2B Pipeline Boost",
+      "imageUrl": "https://picsum.photos/seed/3/600/400",
+      "imageHint": "business meeting"
+    },
+    {
+      "id": "4",
+      "description": "Team member Abbas",
+      "imageUrl": "https://picsum.photos/seed/4/200/200",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "5",
+      "description": "Team member Hamza",
+      "imageUrl": "https://picsum.photos/seed/5/200/200",
+      "imageHint": "man portrait smiling"
+    },
+    {
+      "id": "6",
+      "description": "Team member Zain",
+      "imageUrl": "https://picsum.photos/seed/6/200/200",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "7",
+      "description": "Hero background image",
+      "imageUrl": "https://picsum.photos/seed/7/1920/1080",
+      "imageHint": "abstract tech"
+    },
+    {
+      "id": "8",
+      "description": "Map location",
+      "imageUrl": "https://picsum.photos/seed/8/600/400",
+      "imageHint": "city map"
+    }
+  ]
 }
