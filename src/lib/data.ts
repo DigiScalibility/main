@@ -1,3 +1,4 @@
+
 import {
   BarChart2,
   Briefcase,
@@ -7,6 +8,17 @@ import {
   Search,
   Users,
 } from "lucide-react";
+import { db } from './firebase';
+import { collection, getDocs } from 'firebase/firestore';
+
+export type Service = {
+  icon: string;
+  title: string;
+  description: string;
+  benefits: string[];
+  pricing: string;
+  timeline: string;
+};
 
 export const navLinks = [
   { href: "#services", label: "Services" },
@@ -15,9 +27,9 @@ export const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
-export const services = [
+export const staticServices: Service[] = [
   {
-    icon: Code,
+    icon: 'Code',
     title: "Website Development",
     description: "Next.js or Webflow builds with CMS, analytics, SEO, performance & accessibility pass.",
     benefits: [
@@ -29,7 +41,7 @@ export const services = [
     timeline: "4-8 weeks",
   },
   {
-    icon: Search,
+    icon: 'Search',
     title: "SEO & Site Audits",
     description: "Technical audits, content strategy, link building, research & briefs, digital PR outreach.",
     benefits: [
@@ -41,7 +53,7 @@ export const services = [
     timeline: "Monthly",
   },
   {
-    icon: Megaphone,
+    icon: 'Megaphone',
     title: "Social Media & Content",
     description: "On-brand creative, community management, content calendars.",
     benefits: [
@@ -53,7 +65,7 @@ export const services = [
     timeline: "Monthly",
   },
   {
-    icon: LineChart,
+    icon: 'LineChart',
     title: "Digital Marketing",
     description: "Full-funnel paid media, email & SMS, CRO experiments.",
     benefits: [
@@ -65,7 +77,7 @@ export const services = [
     timeline: "Monthly",
   },
   {
-    icon: Users,
+    icon: 'Users',
     title: "Lead Generation",
     description: "Outbound B2B campaigns with ICP messaging, sequencing, CRM integration.",
     benefits: [
@@ -77,7 +89,7 @@ export const services = [
     timeline: "Quarterly",
   },
   {
-    icon: BarChart2,
+    icon: 'BarChart2',
     title: "Analytics & CRO",
     description: "GA4 setup, server events, KPI dashboards, AB & UX research.",
     benefits: [
@@ -89,6 +101,23 @@ export const services = [
     timeline: "Monthly",
   },
 ];
+
+export async function getServices(): Promise<Service[]> {
+  try {
+    const servicesCollection = collection(db, 'services');
+    const servicesSnapshot = await getDocs(servicesCollection);
+    if (servicesSnapshot.empty) {
+      console.log('No services found in Firestore, using static data.');
+      return staticServices;
+    }
+    const servicesList = servicesSnapshot.docs.map(doc => doc.data() as Service);
+    return servicesList;
+  } catch (error) {
+    console.error("Error fetching services from Firestore: ", error);
+    return staticServices; // Fallback to static data on error
+  }
+}
+
 
 export const plans = [
   {
@@ -235,8 +264,8 @@ export const footerLinks = {
         { href: "#contact", label: "Contact" },
     ],
     resources: [
-        { href: "#blog", label: "Blog" },
-        { href: "#guides", label: "Guides" },
-        { href: "#faqs", label: "FAQs" },
+        { href: "/blog", label: "Blog" },
+        { href: "/guides", label: "Guides" },
+        { href: "/faqs", label: "FAQs" },
     ]
 }

@@ -7,12 +7,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { services } from "@/lib/data";
+import type { Service } from "@/lib/data";
 import { CheckCircle } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
-export function Services() {
+type IconName = keyof typeof LucideIcons;
+
+const IconComponent = ({ name }: { name: string }) => {
+  const LucideIcon = LucideIcons[name as IconName] as React.FC<React.SVGProps<SVGSVGElement>>;
+  if (!LucideIcon) {
+    return <LucideIcons.HelpCircle className="h-6 w-6 text-primary service-icon transition-transform duration-300" />;
+  }
+  return <LucideIcon className="h-6 w-6 text-primary service-icon transition-transform duration-300" />;
+};
+
+
+export function Services({ services }: { services: Service[] }) {
   return (
-    <section id="services" className="py-16 md:py-24 bg-secondary">
+    <section id="services" className="py-16 md:py-24 bg-background/30">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">
@@ -27,12 +39,12 @@ export function Services() {
           {services.map((service) => (
             <Card
               key={service.title}
-              className="flex flex-col bg-background"
+              className="flex flex-col bg-background/50 card"
             >
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <div className="bg-primary/10 p-2 rounded-lg">
-                     <service.icon className="h-6 w-6 text-primary service-icon transition-transform duration-300" />
+                     <IconComponent name={service.icon} />
                   </div>
                   <CardTitle className="font-headline text-xl">
                     {service.title}
@@ -55,8 +67,8 @@ export function Services() {
                 </div>
               </CardContent>
               <CardFooter className="gap-2">
-                <Button variant="outline" className="w-full">Learn More</Button>
-                <Button className="w-full">Get Started</Button>
+                <Button variant="outline" className="w-full btn">Learn More</Button>
+                <Button className="w-full btn">Get Started</Button>
               </CardFooter>
             </Card>
           ))}

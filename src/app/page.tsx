@@ -6,12 +6,14 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { CaseStudiesAndTestimonials } from "@/components/sections/CaseStudiesAndTestimonials";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
+import { getServices } from "@/lib/data";
 
-export default function Home() {
+export default async function Home() {
+  const services = await getServices();
   return (
     <>
       <Hero />
-      <Services />
+      <Services services={services} />
       <Plans />
       <HowItWorks />
       <CaseStudiesAndTestimonials />
