@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -10,6 +10,25 @@ import { navLinks } from "@/lib/data";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navLinks.map(link => document.querySelector(link.href));
+      const scrollPosition = window.scrollY + 150;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && (section as HTMLElement).offsetTop <= scrollPosition) {
+          setActiveLink(navLinks[i].href);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -23,7 +42,9 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
+                className={`transition-colors hover:text-primary ${
+                  activeLink === link.href ? "text-primary" : "text-foreground/60"
+                }`}
               >
                 {link.label}
               </Link>

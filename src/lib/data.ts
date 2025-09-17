@@ -126,6 +126,10 @@ export const staticServices: Service[] = [
 ];
 
 async function fetchCollection<T>(collectionName: string, fallbackData: T[], orderByField?: string): Promise<T[]> {
+  if (typeof window !== 'undefined') {
+    // This function should only run on the server
+    return fallbackData;
+  }
   try {
     const coll = collection(db, collectionName);
     const q = orderByField ? query(coll, orderBy(orderByField)) : coll;
@@ -134,7 +138,27 @@ async function fetchCollection<T>(collectionName: string, fallbackData: T[], ord
       console.log(`No documents found in '${collectionName}', using static data.`);
       return fallbackData;
     }
-    return snapshot.docs.map(doc => doc.data() as T);
+    const data = snapshot.docs.map(doc => doc.data() as T);
+    
+    // Replace placeholder URLs with actual URLs from placeholder-images.json if applicable
+    if (collectionName === 'caseStudies') {
+      (data as CaseStudy[]).forEach((item, index) => {
+        const placeholder = PlaceHolderImages.find(p => p.id === `${index + 1}`);
+        if (placeholder) {
+          item.image = placeholder.imageUrl;
+        }
+      });
+    }
+    if (collectionName === 'team') {
+       (data as TeamMember[]).forEach((item, index) => {
+        const placeholder = PlaceHolderImages.find(p => p.id === `${index + 4}`);
+        if (placeholder) {
+          item.avatar = placeholder.imageUrl;
+        }
+      });
+    }
+
+    return data;
   } catch (error) {
     console.error(`Error fetching '${collectionName}' from Firestore: `, error);
     return fallbackData; // Fallback to static data on error
@@ -221,25 +245,25 @@ export const howItWorks = [
 
 const staticCaseStudies: CaseStudy[] = [
     {
-        image: PlaceHolderImages.find(p => p.id === '1')?.imageUrl || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '1')?.imageUrl || "",
         title: "SaaS Website Revamp",
         description: "A complete overhaul of a B2B SaaS platform's marketing site to improve user journey and conversion rates.",
         result: "10x signup conversions",
-        imageHint: "dashboard analytics"
+        imageHint: PlaceHolderImages.find(p => p.id === '1')?.imageHint || "dashboard analytics"
     },
     {
-        image: PlaceHolderImages.find(p => p.id === '2')?.imageUrl || "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '2')?.imageUrl || "",
         title: "eCommerce Growth Engine",
         description: "Implemented a full-funnel marketing strategy for a D2C brand, combining SEO, paid social, and email.",
         result: "250% ROI in 6 months",
-        imageHint: "online shopping"
+        imageHint: PlaceHolderImages.find(p => p.id === '2')?.imageHint || "online shopping"
     },
     {
-        image: PlaceHolderImages.find(p => p.id === '3')?.imageUrl || "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '3')?.imageUrl || "",
         title: "B2B Pipeline Boost",
         description: "Developed a targeted lead generation campaign that filled the sales pipeline with qualified opportunities.",
         result: "+$2M pipeline value",
-        imageHint: "business meeting"
+        imageHint: PlaceHolderImages.find(p => p.id === '3')?.imageHint || "business meeting"
     }
 ]
 
@@ -273,23 +297,23 @@ const staticTeam: TeamMember[] = [
     {
         name: "Abbas",
         role: "Founder & Lead Engineer",
-        avatar: PlaceHolderImages.find(p => p.id === '4')?.imageUrl || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '4')?.imageUrl || "",
         bio: "With over a decade of experience in software engineering, Abbas leads our technical vision and ensures every project is built to the highest standards.",
-        imageHint: "man portrait"
+        imageHint: PlaceHolderImages.find(p => p.id === '4')?.imageHint || "man portrait"
     },
     {
         name: "Hamza",
         role: "Head of Marketing",
-        avatar: PlaceHolderImages.find(p => p.id === '5')?.imageUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '5')?.imageUrl || "",
         bio: "Hamza is a data-driven marketer who excels at creating growth strategies that deliver a measurable impact and significant ROI for our clients.",
-        imageHint: "man portrait smiling"
+        imageHint: PlaceHolderImages.find(p => p.id === '5')?.imageHint || "man portrait smiling"
     },
     {
         name: "Zain",
         role: "Operations Lead",
-        avatar: PlaceHolderImages.find(p => p.id === '6')?.imageUrl || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '6')?.imageUrl || "",
         bio: "Zain keeps the wheels turning, managing projects, and ensuring seamless communication and delivery from start to finish.",
-        imageHint: "woman portrait"
+        imageHint: PlaceHolderImages.find(p => p.id === '6')?.imageHint || "woman portrait"
     }
 ]
 
