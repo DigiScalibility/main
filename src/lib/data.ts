@@ -1,5 +1,6 @@
 import { db } from './firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { PlaceHolderImages } from './placeholder-images';
 
 export type Service = {
   icon: string;
@@ -220,21 +221,21 @@ export const howItWorks = [
 
 const staticCaseStudies: CaseStudy[] = [
     {
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '1')?.imageUrl || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
         title: "SaaS Website Revamp",
         description: "A complete overhaul of a B2B SaaS platform's marketing site to improve user journey and conversion rates.",
         result: "10x signup conversions",
         imageHint: "dashboard analytics"
     },
     {
-        image: "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '2')?.imageUrl || "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=600&auto=format&fit=crop",
         title: "eCommerce Growth Engine",
         description: "Implemented a full-funnel marketing strategy for a D2C brand, combining SEO, paid social, and email.",
         result: "250% ROI in 6 months",
         imageHint: "online shopping"
     },
     {
-        image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=600&auto=format&fit=crop",
+        image: PlaceHolderImages.find(p => p.id === '3')?.imageUrl || "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=600&auto=format&fit=crop",
         title: "B2B Pipeline Boost",
         description: "Developed a targeted lead generation campaign that filled the sales pipeline with qualified opportunities.",
         result: "+$2M pipeline value",
@@ -272,21 +273,21 @@ const staticTeam: TeamMember[] = [
     {
         name: "Abbas",
         role: "Founder & Lead Engineer",
-        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '4')?.imageUrl || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=200&auto=format&fit=crop",
         bio: "With over a decade of experience in software engineering, Abbas leads our technical vision and ensures every project is built to the highest standards.",
         imageHint: "man portrait"
     },
     {
         name: "Hamza",
         role: "Head of Marketing",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '5')?.imageUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
         bio: "Hamza is a data-driven marketer who excels at creating growth strategies that deliver a measurable impact and significant ROI for our clients.",
         imageHint: "man portrait smiling"
     },
     {
         name: "Zain",
         role: "Operations Lead",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop",
+        avatar: PlaceHolderImages.find(p => p.id === '6')?.imageUrl || "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop",
         bio: "Zain keeps the wheels turning, managing projects, and ensuring seamless communication and delivery from start to finish.",
         imageHint: "woman portrait"
     }
@@ -309,4 +310,15 @@ export const footerLinks = {
         { href: "/guides", label: "Guides" },
         { href: "/faqs", label: "FAQs" },
     ]
+}
+
+export type ContactMessage = {
+    name: string;
+    email: string;
+    company?: string;
+    budget?: string;
+    timeline?: string;
+    projectDetails: string;
+    adjustedProjectDetails?: string;
+    createdAt: Date;
 }

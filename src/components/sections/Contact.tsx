@@ -35,6 +35,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { adjustProjectDetailsTone } from "@/ai/flows/adjust-project-details-tone";
+import { saveContactMessage } from "@/ai/flows/save-contact-message";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -51,6 +53,7 @@ export function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAiAdjusting, setIsAiAdjusting] = useState(false);
+  const mapImage = PlaceHolderImages.find(p => p.id === '8');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,15 +67,32 @@ export function Contact() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    console.log(values);
-    // This is a mock submission. In a real app, you'd send this to a backend.
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    toast({
-      title: "Message Sent!",
-      description: "Thanks for reaching out. We'll get back to you shortly.",
-    });
-    form.reset();
+    try {
+      const adjustedDetails = form.getValues("projectDetails");
+      const originalDetails = form.formState.defaultValues?.projectDetails;
+      
+      await saveContactMessage({
+        ...values,
+        createdAt: new Date(),
+        adjustedProjectDetails: (originalDetails && originalDetails !== adjustedDetails) ? adjustedDetails : undefined,
+        projectDetails: (originalDetails && originalDetails !== adjustedDetails) ? originalDetails : adjustedDetails,
+      });
+
+      toast({
+        title: "Message Sent!",
+        description: "Thanks for reaching out. We'll get back to you shortly.",
+      });
+      form.reset();
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast({
+        variant: "destructive",
+        title: "Submission Error",
+        description: "Could not send your message. Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   async function handleAdjustTone() {
@@ -155,9 +175,9 @@ export function Contact() {
             </div>
             <div>
                 <Image
-                    src="https://images.unsplash.com/photo-1541443914731-d580d8457def?q=80&w=600&auto=format&fit=crop"
+                    src={mapImage?.imageUrl || "https://images.unsplash.com/photo-1541443914731-d580d8457def?q=80&w=600&auto=format&fit=crop"}
                     alt="Map showing office location"
-                    data-ai-hint="city map"
+                    data-ai-hint={mapImage?.imageHint || 'city map'}
                     width={600}
                     height={400}
                     className="rounded-lg w-full aspect-video object-cover"
@@ -284,7 +304,7 @@ export function Contact() {
                     )}
                     Adjust Tone with AI
                   </Button>
-                  <Button type="submit" disabled={isSubmitting}>
+                  <Button type="submit" disabled={isSubmitting} className="btn-glow">
                     {isSubmitting && (
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
                     )}
