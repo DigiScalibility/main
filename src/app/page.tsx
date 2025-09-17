@@ -6,7 +6,8 @@ import { CtaSection } from "@/components/sections/CtaSection";
 import { CaseStudiesAndTestimonials } from "@/components/sections/CaseStudiesAndTestimonials";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
-import { getServices, getPlans, getCaseStudies, getTestimonials, getTeam } from "@/lib/data";
+import { getServices, getPlans, getCaseStudies, getTestimonials, getTeam, getBlogPosts } from "@/lib/data";
+import { BlogHighlight } from "@/components/sections/BlogHighlight";
 
 export default async function Home() {
   const services = await getServices();
@@ -14,6 +15,7 @@ export default async function Home() {
   const caseStudies = await getCaseStudies();
   const testimonials = await getTestimonials();
   const team = await getTeam();
+  const blogPosts = await getBlogPosts({ limit: 3 });
 
   return (
     <>
@@ -23,6 +25,7 @@ export default async function Home() {
       <HowItWorks />
       <CaseStudiesAndTestimonials caseStudies={caseStudies} testimonials={testimonials} />
       <About team={team} />
+      <BlogHighlight posts={blogPosts} />
       <CtaSection />
       <Contact />
     </>

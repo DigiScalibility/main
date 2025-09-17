@@ -1,6 +1,7 @@
 import { db } from './firebase';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, limit as firestoreLimit } from 'firebase/firestore';
 import { PlaceHolderImages } from './placeholder-images';
+import { Timestamp } from 'firebase/firestore';
 
 export type Service = {
   icon: string;
@@ -31,7 +32,7 @@ export type CaseStudy = {
 
 export type Testimonial = {
   quote: string;
-  name: string;
+  name:string;
   company: string;
 };
 
@@ -43,8 +44,23 @@ export type TeamMember = {
   imageHint: string;
 };
 
+export type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  publishedAt: Timestamp;
+  summary: string;
+  content: string;
+  tags: string[];
+  imageUrl: string;
+  imageHint: string;
+};
+
+
 export const navLinks = [
   { href: "#services", label: "Services" },
+  { href: "/blog", label: "Blog"},
   { href: "#case-studies", label: "Case Studies" },
   { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
@@ -125,48 +141,50 @@ export const staticServices: Service[] = [
   },
 ];
 
-async function fetchCollection<T>(collectionName: string, fallbackData: T[], orderByField?: string): Promise<T[]> {
+async function fetchCollection<T>(collectionName: string, fallbackData: T[], options?: { orderByField?: string; limit?: number }): Promise<T[]> {
   if (typeof window !== 'undefined') {
-    // This function should only run on the server
     return fallbackData;
   }
   try {
-    const coll = collection(db, collectionName);
-    const q = orderByField ? query(coll, orderBy(orderByField)) : coll;
+    let q = query(collection(db, collectionName));
+    
+    if (options?.orderByField) {
+      q = query(q, orderBy(options.orderByField, 'desc'));
+    }
+    if (options?.limit) {
+      q = query(q, firestoreLimit(options.limit));
+    }
+
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
       console.log(`No documents found in '${collectionName}', using static data.`);
       return fallbackData;
     }
-    const data = snapshot.docs.map(doc => doc.data() as T);
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
     
-    // Replace placeholder URLs with actual URLs from placeholder-images.json if applicable
+    // Image placeholder logic...
     if (collectionName === 'caseStudies') {
-      (data as CaseStudy[]).forEach((item, index) => {
+      (data as unknown as CaseStudy[]).forEach((item, index) => {
         const placeholder = PlaceHolderImages.find(p => p.id === `${index + 1}`);
-        if (placeholder) {
-          item.image = placeholder.imageUrl;
-        }
+        if (placeholder) item.image = placeholder.imageUrl;
       });
     }
-    if (collectionName === 'team') {
-       (data as TeamMember[]).forEach((item, index) => {
+     if (collectionName === 'team') {
+       (data as unknown as TeamMember[]).forEach((item, index) => {
         const placeholder = PlaceHolderImages.find(p => p.id === `${index + 4}`);
-        if (placeholder) {
-          item.avatar = placeholder.imageUrl;
-        }
+        if (placeholder) item.avatar = placeholder.imageUrl;
       });
     }
 
     return data;
   } catch (error) {
     console.error(`Error fetching '${collectionName}' from Firestore: `, error);
-    return fallbackData; // Fallback to static data on error
+    return fallbackData;
   }
 }
 
 export async function getServices(): Promise<Service[]> {
-  return fetchCollection<Service>('services', staticServices, 'title');
+  return fetchCollection<Service>('services', staticServices, { orderByField: 'title' });
 }
 
 const staticPlans: Plan[] = [
@@ -217,7 +235,7 @@ const staticPlans: Plan[] = [
 ];
 
 export async function getPlans(): Promise<Plan[]> {
-    return fetchCollection<Plan>('plans', staticPlans, 'name');
+    return fetchCollection<Plan>('plans', staticPlans, { orderByField: 'name' });
 }
 
 export const howItWorks = [
@@ -268,7 +286,7 @@ const staticCaseStudies: CaseStudy[] = [
 ]
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
-    return fetchCollection<CaseStudy>('caseStudies', staticCaseStudies, 'title');
+    return fetchCollection<CaseStudy>('caseStudies', staticCaseStudies, { orderByField: 'title' });
 }
 
 const staticTestimonials: Testimonial[] = [
@@ -290,7 +308,7 @@ const staticTestimonials: Testimonial[] = [
 ]
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-    return fetchCollection<Testimonial>('testimonials', staticTestimonials, 'name');
+    return fetchCollection<Testimonial>('testimonials', staticTestimonials, { orderByField: 'name' });
 }
 
 const staticTeam: TeamMember[] = [
@@ -318,7 +336,50 @@ const staticTeam: TeamMember[] = [
 ]
 
 export async function getTeam(): Promise<TeamMember[]> {
-    return fetchCollection<TeamMember>('team', staticTeam, 'name');
+    return fetchCollection<TeamMember>('team', staticTeam, { orderByField: 'name' });
+}
+
+const staticBlogPosts: BlogPost[] = [
+    {
+        id: '1',
+        title: 'The Future of Headless Commerce',
+        slug: 'future-of-headless-commerce',
+        author: 'Hamza',
+        publishedAt: Timestamp.fromDate(new Date('2024-05-15T10:00:00Z')),
+        summary: 'Exploring the shift towards headless architecture and what it means for e-commerce.',
+        content: 'Full markdown content here...',
+        tags: ['e-commerce', 'headless', 'tech'],
+        imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=600&auto=format&fit=crop',
+        imageHint: 'online payment terminal'
+    },
+    {
+        id: '2',
+        title: 'Maximising ROI with Programmatic SEO',
+        slug: 'programmatic-seo-roi',
+        author: 'Zain',
+        publishedAt: Timestamp.fromDate(new Date('2024-05-10T14:30:00Z')),
+        summary: 'A deep dive into how programmatic SEO can scale your content strategy and drive organic growth.',
+        content: 'Full markdown content here...',
+        tags: ['seo', 'marketing', 'growth'],
+        imageUrl: 'https://images.unsplash.com/photo-1554629947-334ff61d85dc?q=80&w=600&auto=format&fit=crop',
+        imageHint: 'mountain landscape'
+    },
+    {
+        id: '3',
+        title: 'Core Web Vitals: A Practical Guide',
+        slug: 'core-web-vitals-guide',
+        author: 'Abbas',
+        publishedAt: Timestamp.fromDate(new Date('2024-05-01T09:00:00Z')),
+        summary: 'Understand and optimise for Google\'s Core Web Vitals to improve user experience and search rankings.',
+        content: 'Full markdown content here...',
+        tags: ['seo', 'performance', 'webdev'],
+        imageUrl: 'https://images.unsplash.com/photo-1581472723648-90f1da82141e?q=80&w=600&auto=format&fit=crop',
+        imageHint: 'website loading speed'
+    }
+]
+
+export async function getBlogPosts(options?: { limit?: number }): Promise<BlogPost[]> {
+    return fetchCollection<BlogPost>('blogPosts', staticBlogPosts, { orderByField: 'publishedAt', ...options });
 }
 
 
